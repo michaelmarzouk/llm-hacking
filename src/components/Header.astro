@@ -1,23 +1,27 @@
 ---
 import Logo from './Logo.astro';
+import LanguageSwitcher from './LanguageSwitcher.astro';
+import { t, lp, type Locale, defaultLocale } from '../i18n/utils';
 
 interface Props {
   active?: 'hacks' | 'research' | 'defenses' | 'about';
+  locale?: Locale;
 }
-const { active } = Astro.props;
+const { active, locale = defaultLocale } = Astro.props;
+const tr = t(locale);
 
 const links = [
-  { href: '/hacks', label: 'Hacks', id: 'hacks' },
-  { href: '/research', label: 'Research', id: 'research' },
-  { href: '/defenses', label: 'Defenses', id: 'defenses' },
-  { href: '/about', label: 'About', id: 'about' },
+  { href: lp('/hacks', locale),    label: tr.nav.hacks,    id: 'hacks' },
+  { href: lp('/research', locale), label: tr.nav.research, id: 'research' },
+  { href: lp('/defenses', locale), label: tr.nav.defenses, id: 'defenses' },
+  { href: lp('/about', locale),    label: tr.nav.about,    id: 'about' },
 ] as const;
 ---
 <header class="py-5 border-b border-white/[0.08] sticky top-0 bg-cyber-void/[0.85] backdrop-blur-md z-50">
-  <div class="container-main flex justify-between items-center gap-8">
-    <a href="/" class="flex items-center gap-3 font-display font-bold text-lg tracking-tight">
+  <div class="container-main flex justify-between items-center gap-6">
+    <a href={lp('/', locale)} class="flex items-center gap-3 font-display font-bold text-lg tracking-tight">
       <Logo size={36} />
-      <span><span class="text-pure-white">llm-hacking</span><span class="text-matrix-green">.com</span></span>
+      <span class="hidden sm:inline"><span class="text-pure-white">llm-hacking</span><span class="text-matrix-green">.com</span></span>
     </a>
 
     <nav class="hidden md:flex gap-7 text-sm font-medium">
@@ -27,9 +31,9 @@ const links = [
     </nav>
 
     <div class="flex gap-3 items-center">
-      <a href="/search" class="btn-icon" aria-label="Search">⌕</a>
-      <a href="/rss.xml" class="btn-icon" aria-label="RSS">⌗</a>
-      <a href="/login" class="btn-primary">$ login</a>
+      <LanguageSwitcher current={locale} />
+      <a href={lp('/search', locale)} class="btn-icon" aria-label={tr.nav.search}>⌕</a>
+      <a href="/rss.xml" class="btn-icon hidden sm:inline-flex" aria-label="RSS">⌗</a>
     </div>
   </div>
 </header>

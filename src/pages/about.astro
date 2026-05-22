@@ -1,41 +1,9 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import AboutContent from '../components/AboutContent.astro';
+import { t } from '../i18n/utils';
+const tr = t('en');
 ---
-<Layout title="About — LLM-Hacking" active="about">
-  <section class="py-16">
-    <div class="container-main max-w-3xl">
-      <div class="font-mono text-sm text-matrix-green mb-4">&gt; cat README.md</div>
-      <h1 class="font-display font-bold text-5xl tracking-tight mb-6">About llm-hacking<span class="text-matrix-green">.com</span></h1>
-
-      <p class="text-xl text-off-white leading-relaxed mb-6">
-        An open, community-curated database of every known way to break a Large Language Model.
-        Jailbreaks, prompt injections, data extraction techniques, adversarial inputs, sleeper agents — all in one place, with reproducible examples and defenses.
-      </p>
-
-      <h2 class="font-display font-bold text-2xl mt-12 mb-4">Why?</h2>
-      <p class="text-off-white leading-relaxed mb-4">
-        The LLM security space moves faster than any single research group can track.
-        New attacks appear on arXiv, Twitter, and obscure Discord servers every week.
-        Defenders need a consolidated view; researchers need a shared vocabulary.
-      </p>
-      <p class="text-off-white leading-relaxed mb-4">
-        We collect, categorize, and document. Each entry has a reproducible example, affected models, defense strategies, and links to original sources.
-      </p>
-
-      <h2 class="font-display font-bold text-2xl mt-12 mb-4">Editorial line</h2>
-      <ul class="text-off-white leading-relaxed list-disc pl-6 space-y-2">
-        <li>Technical accuracy first — we cite sources, we test claims</li>
-        <li>No sensationalism — "scary AI" framing is forbidden</li>
-        <li>No gatekeeping — we explain, we don't lecture</li>
-        <li>Defense alongside attack — every offensive technique includes mitigation guidance</li>
-      </ul>
-
-      <h2 class="font-display font-bold text-2xl mt-12 mb-4">Contribute</h2>
-      <p class="text-off-white leading-relaxed mb-4">
-        This site is open source.
-        <a href="https://github.com/michaelmarzouk/llm-hacking" class="text-matrix-green underline">github.com/michaelmarzouk/llm-hacking</a>.
-        PRs welcome: new hacks, translations, corrections.
-      </p>
-    </div>
-  </section>
+<Layout title={`${tr.about.title_pre}.com — About`} active="about" locale="en">
+  <AboutContent locale="en" />
 </Layout>

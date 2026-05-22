@@ -1,0 +1,18 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import AboutContent from '../../components/AboutContent.astro';
+import { t, locales, defaultLocale, type Locale } from '../../i18n/utils';
+
+export function getStaticPaths() {
+  return locales
+    .filter(l => l !== defaultLocale)
+    .map(l => ({ params: { lang: l } }));
+}
+
+const { lang } = Astro.params;
+const locale = lang as Locale;
+const tr = t(locale);
+---
+<Layout title={`${tr.about.title_pre}.com — ${tr.nav.about}`} active="about" locale={locale}>
+  <AboutContent locale={locale} />
+</Layout>

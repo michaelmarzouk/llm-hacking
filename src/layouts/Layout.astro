@@ -11,27 +11,37 @@ import '@fontsource/vt323/400.css';
 import StatusBar from '../components/StatusBar.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import { t, defaultLocale, type Locale, locales, lp, stripLocale } from '../i18n/utils';
 
 interface Props {
   title: string;
   description?: string;
   active?: 'hacks' | 'research' | 'defenses' | 'about';
+  locale?: Locale;
 }
-const {
-  title,
-  description = 'Open database of LLM attacks, jailbreaks, and defenses. Updated daily.',
-  active,
-} = Astro.props;
+const { title, description, active, locale = defaultLocale } = Astro.props;
+const tr = t(locale);
+const desc = description || tr.meta.siteDesc;
 
 const canonical = new URL(Astro.url.pathname, Astro.site).toString();
+const pathNoLocale = stripLocale(Astro.url.pathname);
 ---
 <!DOCTYPE html>
-<html lang="en">
+<html lang={locale}>
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content={description} />
+  <meta name="description" content={desc} />
   <link rel="canonical" href={canonical} />
+
+  {locales.map(loc => (
+    <link
+      rel="alternate"
+      hreflang={loc}
+      href={new URL(lp(pathNoLocale, loc as Locale), Astro.site).toString()}
+    />
+  ))}
+  <link rel="alternate" hreflang="x-default" href={new URL(pathNoLocale, Astro.site).toString()} />
 
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
@@ -40,21 +50,22 @@ const canonical = new URL(Astro.url.pathname, Astro.site).toString();
   <meta property="og:type" content="website" />
   <meta property="og:url" content={canonical} />
   <meta property="og:title" content={title} />
-  <meta property="og:description" content={description} />
+  <meta property="og:description" content={desc} />
   <meta property="og:image" content="/og-default.png" />
+  <meta property="og:locale" content={locale} />
 
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content={title} />
-  <meta name="twitter:description" content={description} />
+  <meta name="twitter:description" content={desc} />
 
   <title>{title}</title>
 </head>
 <body>
-  <StatusBar />
-  <Header active={active} />
+  <StatusBar locale={locale} />
+  <Header active={active} locale={locale} />
   <main>
     <slot />
   </main>
-  <Footer />
+  <Footer locale={locale} />
 </body>
 </html>

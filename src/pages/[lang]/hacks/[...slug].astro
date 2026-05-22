@@ -1,23 +1,34 @@
 ---
 import { getCollection } from 'astro:content';
-import Layout from '../../layouts/Layout.astro';
-import TagBadge from '../../components/TagBadge.astro';
-import { t, lp } from '../../i18n/utils';
+import Layout from '../../../layouts/Layout.astro';
+import TagBadge from '../../../components/TagBadge.astro';
+import { t, lp, locales, defaultLocale, type Locale } from '../../../i18n/utils';
 
 export async function getStaticPaths() {
   const hacks = await getCollection('hacks');
-  return hacks.map(h => ({ params: { slug: h.id }, props: { hack: h } }));
+  const paths = [];
+  for (const locale of locales) {
+    if (locale === defaultLocale) continue;
+    for (const h of hacks) {
+      paths.push({ params: { lang: locale, slug: h.id }, props: { hack: h, locale } });
+    }
+  }
+  return paths;
 }
 
-const { hack } = Astro.props;
+const { hack, locale } = Astro.props;
 const { Content } = await hack.render();
 const sevLabel = { crit: 'CRITICAL', med: 'MEDIUM', low: 'LOW' }[hack.data.severity];
-const tr = t('en');
+const tr = t(locale);
 ---
-<Layout title={`${hack.data.title} — LLM-Hacking`} description={hack.data.excerpt} active="hacks" locale="en">
+<Layout title={`${hack.data.title} — LLM-Hacking`} description={hack.data.excerpt} active="hacks" locale={locale}>
   <article class="py-12">
     <div class="container-main max-w-3xl">
-      <a href={lp('/hacks', 'en')} class="font-mono text-sm text-muted-gray hover:text-matrix-green mb-8 inline-block">{tr.back_to_hacks}</a>
+      <a href={lp('/hacks', locale)} class="font-mono text-sm text-muted-gray hover:text-matrix-green mb-8 inline-block">{tr.back_to_hacks}</a>
+
+      <div class="mb-6 p-4 border border-glitch-pink/30 bg-glitch-pink/10 rounded-lg font-mono text-sm text-glitch-pink">
+        ⓘ {tr.banner_translation_pending}
+      </div>
 
       <div class="flex flex-wrap gap-2 mb-6">
         <TagBadge variant="cat" label={hack.data.category} />
@@ -68,8 +79,5 @@ const tr = t('en');
   .prose-content ul, .prose-content ol { margin: 0 0 18px; padding-left: 28px; }
   .prose-content li { margin-bottom: 6px; }
   .prose-content a { color: #00FF94; text-decoration: underline; }
-  .prose-content table { width: 100%; margin: 24px 0; border-collapse: collapse; font-size: 14px; }
-  .prose-content th, .prose-content td { border: 1px solid rgba(255, 255, 255, 0.08); padding: 10px 14px; text-align: left; }
-  .prose-content th { background: rgba(0, 255, 148, 0.08); color: #fff; font-weight: 500; font-family: "JetBrains Mono", monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; }
   .prose-content blockquote { border-left: 3px solid #00FF94; padding-left: 16px; margin: 18px 0; color: #9CA3AF; font-style: italic; }
 </style>

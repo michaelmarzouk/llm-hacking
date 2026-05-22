@@ -1,20 +1,66 @@
 ---
+import { t, defaultLocale, type Locale } from '../i18n/utils';
+
+interface Props { locale?: Locale; }
+const { locale = defaultLocale } = Astro.props;
+const tr = t(locale);
 ---
 <section class="py-20 border-t border-white/[0.08]">
   <div class="container-main">
     <div class="bg-gradient-to-br from-deep-indigo to-matrix-green/[0.06] border border-white/[0.16] rounded-2xl p-12 text-center max-w-3xl mx-auto">
-      <h3 class="font-mono text-sm text-matrix-green tracking-widest mb-3">&gt; subscribe to /var/log/hacks</h3>
-      <h2 class="font-display font-bold text-3xl md:text-4xl leading-tight tracking-tight mb-4">One weekly digest of new attacks.</h2>
-      <p class="text-off-white mb-8 max-w-md mx-auto">Every Monday morning. Curated hacks, key papers, defense techniques. No spam, no clickbait. Unsubscribe in one click.</p>
-      <form class="flex flex-col sm:flex-row gap-2 max-w-md mx-auto" onsubmit="event.preventDefault();">
+      <h3 class="font-mono text-sm text-matrix-green tracking-widest mb-3">{tr.newsletter.tag}</h3>
+      <h2 class="font-display font-bold text-3xl md:text-4xl leading-tight tracking-tight mb-4">{tr.newsletter.title}</h2>
+      <p class="text-off-white mb-8 max-w-md mx-auto">{tr.newsletter.lead}</p>
+
+      <form id="newsletter-form" class="flex flex-col sm:flex-row gap-2 max-w-md mx-auto" novalidate
+            data-msg-sending={tr.newsletter.sending}
+            data-msg-err={tr.newsletter.err}>
         <input
+          name="email"
           type="email"
-          placeholder="your@email.com"
+          placeholder={tr.newsletter.placeholder}
           required
+          autocomplete="email"
           class="flex-1 bg-cyber-void border border-white/[0.16] rounded-lg px-4 py-3 text-pure-white font-mono text-sm focus:outline-none focus:border-matrix-green"
         />
-        <button type="submit" class="bg-matrix-green text-cyber-void rounded-lg px-6 py-3 font-mono font-medium text-sm hover:bg-matrix-dim transition-colors">$ subscribe</button>
+        <input type="text" name="website" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true" />
+        <button type="submit" class="bg-matrix-green text-cyber-void rounded-lg px-6 py-3 font-mono font-medium text-sm hover:bg-matrix-dim transition-colors disabled:opacity-50">{tr.newsletter.submit}</button>
       </form>
+      <p id="newsletter-msg" class="font-mono text-sm mt-4 min-h-[20px]" role="status" aria-live="polite"></p>
     </div>
   </div>
 </section>
+
+<script>
+  const form = document.getElementById('newsletter-form') as HTMLFormElement | null;
+  const msg  = document.getElementById('newsletter-msg') as HTMLElement | null;
+  if (form && msg) {
+    const sendingTxt = form.dataset.msgSending || 'sending…';
+    const errTxt     = form.dataset.msgErr     || 'error';
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = form.querySelector('button') as HTMLButtonElement;
+      btn.disabled = true;
+      msg.className = 'font-mono text-sm mt-4 min-h-[20px] text-muted-gray';
+      msg.textContent = sendingTxt;
+      try {
+        const data = new FormData(form);
+        const res  = await fetch('/subscribe.php', { method: 'POST', body: data });
+        const json = await res.json();
+        if (json.ok) {
+          msg.className = 'font-mono text-sm mt-4 min-h-[20px] text-matrix-green';
+          msg.textContent = '✓ ' + (json.message || 'subscribed');
+          form.reset();
+        } else {
+          msg.className = 'font-mono text-sm mt-4 min-h-[20px] text-glitch-pink';
+          msg.textContent = '✗ ' + (json.message || errTxt);
+        }
+      } catch (err) {
+        msg.className = 'font-mono text-sm mt-4 min-h-[20px] text-glitch-pink';
+        msg.textContent = '✗ ' + errTxt;
+      } finally {
+        btn.disabled = false;
+      }
+    });
+  }
+</script>

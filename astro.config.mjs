@@ -9,9 +9,19 @@ export default defineConfig({
     format: 'directory',
     assets: '_assets',
   },
+  i18n: {
+    defaultLocale: 'en',
+    locales: ['en', 'fr', 'es', 'zh'],
+    routing: { prefixDefaultLocale: false },
+  },
   integrations: [
     tailwind({ applyBaseStyles: false }),
-    sitemap(),
+    sitemap({
+      i18n: {
+        defaultLocale: 'en',
+        locales: { en: 'en-US', fr: 'fr-FR', es: 'es-ES', zh: 'zh-CN' },
+      },
+    }),
   ],
   vite: {
     ssr: { noExternal: ['@fontsource/*'] },

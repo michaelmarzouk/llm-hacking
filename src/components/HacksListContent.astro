@@ -1,0 +1,43 @@
+---
+import { getCollection } from 'astro:content';
+import HackCard from './HackCard.astro';
+import { t, defaultLocale, type Locale } from '../i18n/utils';
+
+interface Props { locale?: Locale; }
+const { locale = defaultLocale } = Astro.props;
+const tr = t(locale);
+
+const allHacks = await getCollection('hacks');
+allHacks.sort((a, b) => b.data.date.localeCompare(a.data.date));
+---
+<section class="py-12">
+  <div class="container-main">
+    <div class="font-mono text-sm text-matrix-green mb-4">&gt; cat /hacks/*.md | wc -l</div>
+    <h1 class="font-display font-bold text-4xl md:text-5xl tracking-tight mb-3">{tr.footer.all_hacks} <span class="text-matrix-green">({allHacks.length})</span></h1>
+    <p class="text-off-white text-lg max-w-2xl">{tr.meta.siteDesc}</p>
+    {locale !== 'en' && (
+      <div class="mt-6 p-4 border border-glitch-pink/30 bg-glitch-pink/10 rounded-lg font-mono text-sm text-glitch-pink inline-block">
+        ⓘ {tr.banner_translation_pending}
+      </div>
+    )}
+  </div>
+</section>
+
+<section class="pb-20">
+  <div class="container-main">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      {allHacks.map(h => (
+        <HackCard
+          href={`/hacks/${h.id}`}
+          title={h.data.title}
+          excerpt={h.data.excerpt}
+          category={h.data.category}
+          severity={h.data.severity}
+          date={h.data.date}
+          readingTime={h.data.readingTime}
+          isNew={h.data.isNew}
+        />
+      ))}
+    </div>
+  </div>
+</section>

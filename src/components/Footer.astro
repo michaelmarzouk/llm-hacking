@@ -1,32 +1,36 @@
 ---
 import Logo from './Logo.astro';
+import { t, lp, defaultLocale, type Locale } from '../i18n/utils';
+
+interface Props { locale?: Locale; }
+const { locale = defaultLocale } = Astro.props;
+const tr = t(locale);
 
 const cols = [
   {
-    title: 'EXPLORE',
+    title: tr.footer.explore,
     links: [
-      { href: '/hacks', label: 'All hacks' },
-      { href: '/categories', label: 'Categories' },
-      { href: '/research', label: 'Research' },
-      { href: '/defenses', label: 'Defenses' },
+      { href: lp('/hacks', locale),      label: tr.footer.all_hacks },
+      { href: lp('/categories', locale), label: tr.footer.categories },
+      { href: lp('/research', locale),   label: tr.footer.research },
+      { href: lp('/defenses', locale),   label: tr.footer.defenses },
     ],
   },
   {
-    title: 'RESOURCES',
+    title: tr.footer.resources,
     links: [
-      { href: '/api', label: 'Public API' },
-      { href: '/rss.xml', label: 'RSS feed' },
-      { href: '/contribute', label: 'Contribute' },
-      { href: '/about', label: 'About' },
+      { href: '/rss.xml',                label: tr.footer.rss },
+      { href: lp('/contribute', locale), label: tr.footer.contribute },
+      { href: lp('/about', locale),      label: tr.footer.about },
     ],
   },
   {
-    title: 'FOLLOW',
+    title: tr.footer.follow,
     links: [
-      { href: 'https://github.com/michaelmarzouk/llm-hacking', label: 'GitHub' },
-      { href: 'https://twitter.com/llmhacking', label: 'Twitter' },
-      { href: 'https://mastodon.social/@llmhacking', label: 'Mastodon' },
-      { href: '/newsletter', label: 'Newsletter' },
+      { href: null, label: 'GitHub',     coming: true },
+      { href: null, label: 'Twitter',    coming: true },
+      { href: null, label: 'Mastodon',   coming: true },
+      { href: null, label: 'Newsletter', coming: true },
     ],
   },
 ];
@@ -38,7 +42,7 @@ const cols = [
         <Logo size={48} />
         <div>
           <h4 class="font-display text-base mb-1">llm-hacking<span class="text-matrix-green">.com</span></h4>
-          <p class="text-sm text-muted-gray leading-relaxed">Open database of LLM attacks, jailbreaks, and defenses. Built by researchers, for researchers.</p>
+          <p class="text-sm text-muted-gray leading-relaxed">{tr.footer.tagline}</p>
         </div>
       </div>
       {cols.map(col => (
@@ -46,15 +50,24 @@ const cols = [
           <h5 class="font-mono text-xs text-muted-gray uppercase tracking-widest mb-4">{col.title}</h5>
           <ul class="space-y-2">
             {col.links.map(l => (
-              <li><a href={l.href} class="text-sm text-off-white hover:text-matrix-green transition-colors">{l.label}</a></li>
+              <li>
+                {l.href ? (
+                  <a href={l.href} class="text-sm text-off-white hover:text-matrix-green transition-colors">{l.label}</a>
+                ) : (
+                  <span class="text-sm text-muted-gray inline-flex items-center gap-1.5 cursor-not-allowed">
+                    {l.label}
+                    <span class="font-mono text-[10px] text-code-gray">{tr.footer.coming}</span>
+                  </span>
+                )}
+              </li>
             ))}
           </ul>
         </div>
       ))}
     </div>
     <div class="pt-6 border-t border-white/[0.08] flex justify-between items-center font-mono text-xs text-muted-gray">
-      <span>© 2026 llm-hacking.com — content under CC BY-SA 4.0</span>
-      <span class="text-code-gray hidden md:inline">$ echo "stay curious, stay safe"</span>
+      <span>{tr.footer.copyright_pre} <a href="/license" class="hover:text-matrix-green underline decoration-dotted">CC BY-SA 4.0</a> {tr.footer.copyright_post}</span>
+      <span class="text-code-gray hidden md:inline">{tr.footer.signoff}</span>
     </div>
   </div>
 </footer>

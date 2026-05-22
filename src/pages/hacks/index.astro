@@ -1,36 +1,9 @@
 ---
-import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
-import HackCard from '../../components/HackCard.astro';
-
-const allHacks = await getCollection('hacks');
-allHacks.sort((a, b) => b.data.date.localeCompare(a.data.date));
+import HacksListContent from '../../components/HacksListContent.astro';
+import { t } from '../../i18n/utils';
+const tr = t('en');
 ---
-<Layout title="All hacks — LLM-Hacking" active="hacks">
-  <section class="py-12">
-    <div class="container-main">
-      <div class="font-mono text-sm text-matrix-green mb-4">&gt; cat /hacks/*.md | wc -l</div>
-      <h1 class="font-display font-bold text-4xl md:text-5xl tracking-tight mb-3">All hacks <span class="text-matrix-green">({allHacks.length})</span></h1>
-      <p class="text-off-white text-lg max-w-2xl">Every documented attack on a Large Language Model. Sorted by date. Use search and filters to narrow down by category, severity, or affected model.</p>
-    </div>
-  </section>
-
-  <section class="pb-20">
-    <div class="container-main">
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        {allHacks.map(h => (
-          <HackCard
-            href={`/hacks/${h.id}`}
-            title={h.data.title}
-            excerpt={h.data.excerpt}
-            category={h.data.category}
-            severity={h.data.severity}
-            date={h.data.date}
-            readingTime={h.data.readingTime}
-            isNew={h.data.isNew}
-          />
-        ))}
-      </div>
-    </div>
-  </section>
+<Layout title={`${tr.footer.all_hacks} — LLM-Hacking`} active="hacks" locale="en">
+  <HacksListContent locale="en" />
 </Layout>

@@ -1,0 +1,88 @@
+---
+import { t, defaultLocale, type Locale, lp } from '../i18n/utils';
+
+interface Props { locale?: Locale; }
+const { locale = defaultLocale } = Astro.props;
+const tr = t(locale);
+---
+<section class="py-12">
+  <div class="container-main max-w-3xl">
+    <div class="font-mono text-sm text-matrix-green mb-4">{tr.search.prompt}</div>
+    <h1 class="font-display font-bold text-5xl tracking-tight mb-8">{tr.search.title}</h1>
+
+    <div class="relative mb-8">
+      <input
+        id="search-input"
+        type="search"
+        autocomplete="off"
+        autofocus
+        placeholder={tr.search.placeholder}
+        class="w-full bg-cyber-void border border-white/[0.16] rounded-lg pl-12 pr-4 py-4 text-pure-white text-lg focus:outline-none focus:border-matrix-green placeholder:text-muted-gray"
+      />
+      <span class="absolute left-4 top-1/2 -translate-y-1/2 font-mono text-matrix-green text-xl">⌕</span>
+    </div>
+
+    <div id="search-meta" class="font-mono text-xs text-muted-gray mb-6 min-h-[16px]"
+         data-indexed-suffix={tr.search.indexed_suffix}></div>
+    <div id="search-results" class="space-y-3"></div>
+    <div id="search-empty" class="text-muted-gray text-center py-12 hidden">
+      <p class="mb-2">{tr.search.no_results_title}</p>
+      <p class="text-sm">{tr.search.no_results_alt_pre} <a href={lp('/hacks', locale)} class="text-matrix-green underline">{tr.search.no_results_alt_link}</a>.</p>
+    </div>
+  </div>
+</section>
+
+<script>
+  type Doc = { id: string; url: string; title: string; excerpt: string; category: string; severity: 'crit'|'med'|'low'; date: string; body: string; };
+  const input    = document.getElementById('search-input') as HTMLInputElement;
+  const results  = document.getElementById('search-results') as HTMLElement;
+  const empty    = document.getElementById('search-empty') as HTMLElement;
+  const metaEl   = document.getElementById('search-meta') as HTMLElement;
+  const indexedSuffix = metaEl?.dataset.indexedSuffix || 'hacks indexed';
+
+  let docs: Doc[] = [];
+  const sevLabel = (s: 'crit'|'med'|'low') => s === 'crit' ? 'CRITICAL' : s === 'med' ? 'MEDIUM' : 'LOW';
+  const sevClass = (s: 'crit'|'med'|'low') => s === 'crit' ? 'tag-crit' : s === 'med' ? 'tag-med' : 'tag-low';
+  const esc = (s: string) => s.replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]!));
+  function hl(text: string, terms: string[]) {
+    let safe = esc(text);
+    for (const tm of terms) { if (!tm) continue;
+      const re = new RegExp('(' + tm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+      safe = safe.replace(re, '<mark class="bg-matrix-green/30 text-matrix-green px-0.5 rounded">$1</mark>');
+    }
+    return safe;
+  }
+  function score(d: Doc, terms: string[]) {
+    let s = 0;
+    const T = d.title.toLowerCase(), E = d.excerpt.toLowerCase(), B = d.body.toLowerCase(), C = d.category.toLowerCase();
+    for (const t of terms) { if (T.includes(t)) s += 10; if (E.includes(t)) s += 4; if (C.includes(t)) s += 3; if (B.includes(t)) s += 1; }
+    return s;
+  }
+  function render(q: string) {
+    const terms = q.toLowerCase().split(/\s+/).filter(Boolean);
+    if (!terms.length) { results.innerHTML = ''; empty.classList.add('hidden'); metaEl.textContent = `${docs.length} ${indexedSuffix}`; return; }
+    const ranked = docs.map(d => ({ d, s: score(d, terms) })).filter(x => x.s > 0).sort((a, b) => b.s - a.s).slice(0, 30);
+    if (!ranked.length) { results.innerHTML = ''; empty.classList.remove('hidden'); metaEl.textContent = '0 results'; return; }
+    empty.classList.add('hidden'); metaEl.textContent = `${ranked.length} result${ranked.length > 1 ? 's' : ''}`;
+    results.innerHTML = ranked.map(({ d }) => `
+      <a href="${d.url}" class="block border border-white/[0.08] rounded-xl p-5 bg-white/[0.015] transition-all hover:border-matrix-green hover:bg-matrix-green/[0.03]">
+        <div class="flex flex-wrap gap-2 mb-3">
+          <span class="tag tag-cat">${esc(d.category)}</span>
+          <span class="tag ${sevClass(d.severity)}">${sevLabel(d.severity)}</span>
+        </div>
+        <h3 class="font-display font-bold text-lg mb-2 leading-tight">${hl(d.title, terms)}</h3>
+        <p class="text-sm text-off-white leading-relaxed mb-2">${hl(d.excerpt, terms)}</p>
+        <div class="font-mono text-[11px] text-muted-gray">${d.date}</div>
+      </a>`).join('');
+  }
+  let debounce: number | undefined;
+  input.addEventListener('input', () => {
+    window.clearTimeout(debounce);
+    debounce = window.setTimeout(() => render(input.value), 80);
+  });
+  fetch('/search-index.json').then(r => r.json()).then(d => {
+    docs = d;
+    const q = new URLSearchParams(window.location.search).get('q');
+    if (q) { input.value = q; render(q); } else { render(''); }
+  }).catch(() => { metaEl.textContent = 'index unavailable'; });
+</script>

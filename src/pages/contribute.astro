@@ -1,0 +1,9 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ContributeContent from '../components/ContributeContent.astro';
+import { t } from '../i18n/utils';
+const tr = t('en');
+---
+<Layout title={`${tr.contribute.title} — LLM-Hacking`} locale="en">
+  <ContributeContent locale="en" />
+</Layout>

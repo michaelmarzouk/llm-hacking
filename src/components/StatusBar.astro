@@ -1,20 +1,25 @@
 ---
-const lastScan = '2h ago';
+import { t, defaultLocale, type Locale } from '../i18n/utils';
+
+interface Props { locale?: Locale; }
+const { locale = defaultLocale } = Astro.props;
+const tr = t(locale);
+
+const lastScan = '2h';
 const newCves = 3;
 ---
 <div class="bg-black/30 border-b border-white/[0.08] py-1.5">
   <div class="container-main flex justify-between items-center gap-6 font-mono text-xs text-muted-gray">
     <div class="flex gap-4 items-center">
       <span class="inline-block w-2 h-2 rounded-full bg-matrix-green shadow-[0_0_8px_#00FF94] animate-pulse"></span>
-      <span>system: <span class="text-matrix-green">OPERATIONAL</span></span>
+      <span class="text-matrix-green">{tr.status.live}</span>
       <span class="text-code-gray hidden md:inline">|</span>
-      <span class="hidden md:inline">last scan: <span class="text-pure-white">{lastScan}</span></span>
+      <span class="hidden md:inline">{tr.status.lastScan}</span>
       <span class="text-code-gray hidden md:inline">|</span>
-      <span class="text-glitch-pink hidden md:inline">{newCves} new CVEs this week</span>
+      <span class="text-glitch-pink hidden md:inline">{newCves} {tr.status.cves}</span>
     </div>
     <div class="hidden md:block">
-      <span class="text-code-gray">v1.0 //</span>
-      <span> built on Astro</span>
+      <span class="text-code-gray">v1.0</span>
     </div>
   </div>
 </div>

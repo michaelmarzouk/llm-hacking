@@ -1,0 +1,9 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SearchContent from '../components/SearchContent.astro';
+import { t } from '../i18n/utils';
+const tr = t('en');
+---
+<Layout title={`${tr.search.title} — LLM-Hacking`} locale="en">
+  <SearchContent locale="en" />
+</Layout>

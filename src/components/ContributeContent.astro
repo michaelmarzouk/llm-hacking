@@ -1,0 +1,100 @@
+---
+import { t, defaultLocale, type Locale } from '../i18n/utils';
+
+interface Props { locale?: Locale; }
+const { locale = defaultLocale } = Astro.props;
+const tr = t(locale);
+---
+<section class="py-16">
+  <div class="container-main max-w-2xl">
+    <div class="font-mono text-sm text-matrix-green mb-4">{tr.contribute.prompt}</div>
+    <h1 class="font-display font-bold text-5xl tracking-tight mb-4">{tr.contribute.title}</h1>
+    <p class="text-lg text-off-white leading-relaxed mb-10">{tr.contribute.lead}</p>
+
+    <form id="contrib-form" class="space-y-5" novalidate
+          data-msg-sending={tr.contribute.sending}
+          data-msg-err={tr.newsletter.err}>
+      <input type="text" name="website" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true" />
+
+      <div>
+        <label class="block font-mono text-xs text-muted-gray uppercase tracking-widest mb-2">{tr.contribute.name}</label>
+        <input name="name" type="text" required maxlength="100"
+          class="w-full bg-cyber-void border border-white/[0.16] rounded-lg px-4 py-3 text-pure-white text-base focus:outline-none focus:border-matrix-green" />
+      </div>
+
+      <div>
+        <label class="block font-mono text-xs text-muted-gray uppercase tracking-widest mb-2">{tr.contribute.email} <span class="text-muted-gray normal-case tracking-normal">{tr.contribute.email_hint}</span></label>
+        <input name="email" type="email" required autocomplete="email"
+          class="w-full bg-cyber-void border border-white/[0.16] rounded-lg px-4 py-3 text-pure-white text-base focus:outline-none focus:border-matrix-green" />
+      </div>
+
+      <div>
+        <label class="block font-mono text-xs text-muted-gray uppercase tracking-widest mb-2">{tr.contribute.type}</label>
+        <select name="type" required
+          class="w-full bg-cyber-void border border-white/[0.16] rounded-lg px-4 py-3 text-pure-white text-base focus:outline-none focus:border-matrix-green">
+          <option value="">{tr.contribute.type_select}</option>
+          <option value="new-hack">{tr.contribute.type_new}</option>
+          <option value="correction">{tr.contribute.type_correction}</option>
+          <option value="translation">{tr.contribute.type_translation}</option>
+          <option value="other">{tr.contribute.type_other}</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block font-mono text-xs text-muted-gray uppercase tracking-widest mb-2">{tr.contribute.subj}</label>
+        <input name="title" type="text" required maxlength="200" placeholder={tr.contribute.subj_ph}
+          class="w-full bg-cyber-void border border-white/[0.16] rounded-lg px-4 py-3 text-pure-white text-base focus:outline-none focus:border-matrix-green placeholder:text-muted-gray placeholder:text-sm" />
+      </div>
+
+      <div>
+        <label class="block font-mono text-xs text-muted-gray uppercase tracking-widest mb-2">{tr.contribute.details} <span class="text-muted-gray normal-case tracking-normal">{tr.contribute.details_hint}</span></label>
+        <textarea name="content" required minlength="20" maxlength="10000" rows="10" placeholder={tr.contribute.details_ph}
+          class="w-full bg-cyber-void border border-white/[0.16] rounded-lg px-4 py-3 text-pure-white text-base focus:outline-none focus:border-matrix-green resize-y font-mono placeholder:text-muted-gray placeholder:text-sm placeholder:font-sans"></textarea>
+      </div>
+
+      <button type="submit"
+        class="bg-matrix-green text-cyber-void rounded-lg px-6 py-3 font-mono font-medium text-base hover:bg-matrix-dim transition-colors disabled:opacity-50">{tr.contribute.submit}</button>
+
+      <p id="contrib-msg" class="font-mono text-sm min-h-[20px]" role="status" aria-live="polite"></p>
+    </form>
+
+    <div class="mt-12 pt-8 border-t border-white/[0.08] text-sm text-muted-gray">
+      <p class="mb-2"><strong class="text-off-white">{tr.contribute.privacy_pre}</strong> {tr.contribute.privacy}</p>
+      <p><strong class="text-off-white">{tr.contribute.reply_pre}</strong> {tr.contribute.reply}</p>
+    </div>
+  </div>
+</section>
+
+<script>
+  const form = document.getElementById('contrib-form') as HTMLFormElement | null;
+  const msg  = document.getElementById('contrib-msg') as HTMLElement | null;
+  if (form && msg) {
+    const sendingTxt = form.dataset.msgSending || 'sending…';
+    const errTxt     = form.dataset.msgErr     || 'error';
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+      btn.disabled = true;
+      msg.className = 'font-mono text-sm min-h-[20px] text-muted-gray';
+      msg.textContent = sendingTxt;
+      try {
+        const data = new FormData(form);
+        const res  = await fetch('/contribute.php', { method: 'POST', body: data });
+        const json = await res.json();
+        if (json.ok) {
+          msg.className = 'font-mono text-sm min-h-[20px] text-matrix-green';
+          msg.textContent = '✓ ' + (json.message || 'submitted');
+          form.reset();
+        } else {
+          msg.className = 'font-mono text-sm min-h-[20px] text-glitch-pink';
+          msg.textContent = '✗ ' + (json.message || errTxt);
+        }
+      } catch (err) {
+        msg.className = 'font-mono text-sm min-h-[20px] text-glitch-pink';
+        msg.textContent = '✗ ' + errTxt;
+      } finally {
+        btn.disabled = false;
+      }
+    });
+  }
+</script>

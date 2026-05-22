@@ -1,0 +1,25 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import HomeContent from '../../components/HomeContent.astro';
+import { t, locales, defaultLocale, type Locale } from '../../i18n/utils';
+
+export function getStaticPaths() {
+  return locales
+    .filter(l => l !== defaultLocale)
+    .map(l => ({ params: { lang: l } }));
+}
+
+const { lang } = Astro.params;
+const locale = lang as Locale;
+const tr = t(locale);
+
+const titles: Record<Locale, string> = {
+  en: 'LLM-Hacking — Every known way to break a Large Language Model',
+  fr: 'LLM-Hacking — Toutes les façons connues de casser un Large Language Model',
+  es: 'LLM-Hacking — Todas las formas conocidas de romper un Large Language Model',
+  zh: 'LLM-Hacking — 所有已知的破解大型语言模型的方法',
+};
+---
+<Layout title={titles[locale]} active="hacks" locale={locale}>
+  <HomeContent locale={locale} />
+</Layout>
