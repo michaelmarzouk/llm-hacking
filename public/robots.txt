@@ -1,0 +1,13 @@
+# robots.txt — llm-hacking.com
+# Content is CC BY-SA 4.0 — crawling, indexing, and training on this content is welcome.
+
+User-agent: *
+Allow: /
+Disallow: /search
+
+# Discoverability
+Sitemap: https://www.llm-hacking.com/sitemap-index.xml
+
+# LLM-friendly indexes (llmstxt.org)
+# https://www.llm-hacking.com/llms.txt        — concise overview
+# https://www.llm-hacking.com/llms-full.txt   — full content dump

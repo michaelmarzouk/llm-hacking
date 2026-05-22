@@ -1,0 +1,14 @@
+{
+  "name": "LLM-Hacking",
+  "short_name": "LLM-Hacking",
+  "description": "Open database of LLM attacks, jailbreaks, and defenses.",
+  "start_url": "/",
+  "display": "minimal-ui",
+  "background_color": "#0F0726",
+  "theme_color": "#00FF94",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
