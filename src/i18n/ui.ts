@@ -24,7 +24,8 @@ export const localeFlags: Record<Locale, string> = {
 type Dict = {
   meta: { siteDesc: string; };
   status: { live: string; lastScan: string; cves: string; };
-  nav: { hacks: string; research: string; defenses: string; about: string; login: string; search: string; };
+  nav: { hacks: string; categories: string; about: string; login: string; search: string; };
+  categories: { prompt: string; title: string; lead: string; hacks_count: string; all: string; back: string; empty: string; };
   hero: { prompt: string; tagline_p1: string; tagline_break: string; tagline_p2: string; lead_pre: string; lead_post: string; cta_primary: string; cta_ghost: string; mascot_suffix: string; };
   stats: { hacks: string; categories: string; sources: string; languages: string; };
   sections: { featured: string; recent: string; archive_link: string; all_link: string; };
@@ -43,7 +44,8 @@ export const ui: Record<Locale, Dict> = {
   en: {
     meta: { siteDesc: 'Open database of LLM attacks, jailbreaks, and defenses. Updated daily.' },
     status: { live: 'system: OPERATIONAL', lastScan: 'last scan: 2h ago', cves: 'new CVEs this week' },
-    nav: { hacks: 'Hacks', research: 'Research', defenses: 'Defenses', about: 'About', login: '$ login', search: 'Search' },
+    nav: { hacks: 'Hacks', categories: 'Categories', about: 'About', login: '$ login', search: 'Search' },
+    categories: { prompt: '> ls /hacks/by-category/', title: 'Categories', lead: 'Browse hacks by category. Numbers reflect documented entries.', hacks_count: 'hack(s)', all: 'All hacks', back: '← back to categories', empty: 'No hacks in this category yet.' },
     hero: { prompt: '> welcome to the underbelly', tagline_p1: 'Every known way to', tagline_break: 'break', tagline_p2: 'a Large Language Model.', lead_pre: 'Open database of', lead_post: 'documented LLM attacks. Jailbreaks, prompt injections, data extraction, adversarial inputs. Updated daily, sourced from arXiv and the wild.', cta_primary: '$ browse hacks', cta_ghost: 'What is this?', mascot_suffix: 'EXPLOITS DETECTED' },
     stats: { hacks: 'Hacks documented', categories: 'Categories', sources: 'Sources cited', languages: 'Languages' },
     sections: { featured: 'Featured hack', recent: 'Recent', archive_link: 'see archive', all_link: 'all hacks' },
@@ -61,7 +63,8 @@ export const ui: Record<Locale, Dict> = {
   fr: {
     meta: { siteDesc: 'Base de données ouverte des attaques, jailbreaks et défenses sur les LLM. Mise à jour quotidiennement.' },
     status: { live: 'système : OPÉRATIONNEL', lastScan: 'dernier scan : il y a 2h', cves: 'nouvelles CVE cette semaine' },
-    nav: { hacks: 'Hacks', research: 'Recherche', defenses: 'Défenses', about: 'À propos', login: '$ login', search: 'Recherche' },
+    nav: { hacks: 'Hacks', categories: 'Catégories', about: 'À propos', login: '$ login', search: 'Recherche' },
+    categories: { prompt: '> ls /hacks/by-category/', title: 'Catégories', lead: 'Parcourez les hacks par catégorie. Les chiffres reflètent les entrées documentées.', hacks_count: 'hack(s)', all: 'Tous les hacks', back: '← retour aux catégories', empty: 'Aucun hack dans cette catégorie pour l\'instant.' },
     hero: { prompt: '> bienvenue dans les bas-fonds', tagline_p1: 'Toutes les façons connues de', tagline_break: 'casser', tagline_p2: 'un Large Language Model.', lead_pre: 'Base de données ouverte de', lead_post: 'attaques LLM documentées. Jailbreaks, prompt injections, extraction de données, inputs adverses. Mise à jour quotidiennement, depuis arXiv et le terrain.', cta_primary: '$ explorer les hacks', cta_ghost: 'C\'est quoi ?', mascot_suffix: 'EXPLOITS DÉTECTÉS' },
     stats: { hacks: 'Hacks documentés', categories: 'Catégories', sources: 'Sources citées', languages: 'Langues' },
     sections: { featured: 'Hack à la une', recent: 'Récents', archive_link: 'voir les archives', all_link: 'tous les hacks' },
@@ -79,7 +82,8 @@ export const ui: Record<Locale, Dict> = {
   es: {
     meta: { siteDesc: 'Base de datos abierta de ataques, jailbreaks y defensas sobre LLM. Actualizada a diario.' },
     status: { live: 'sistema: OPERATIVO', lastScan: 'último scan: hace 2h', cves: 'nuevas CVE esta semana' },
-    nav: { hacks: 'Hacks', research: 'Investigación', defenses: 'Defensas', about: 'Acerca de', login: '$ login', search: 'Buscar' },
+    nav: { hacks: 'Hacks', categories: 'Categorías', about: 'Acerca de', login: '$ login', search: 'Buscar' },
+    categories: { prompt: '> ls /hacks/by-category/', title: 'Categorías', lead: 'Explora los hacks por categoría. Los números reflejan las entradas documentadas.', hacks_count: 'hack(s)', all: 'Todos los hacks', back: '← volver a categorías', empty: 'Aún no hay hacks en esta categoría.' },
     hero: { prompt: '> bienvenido al lado oscuro', tagline_p1: 'Todas las formas conocidas de', tagline_break: 'romper', tagline_p2: 'un Large Language Model.', lead_pre: 'Base de datos abierta de', lead_post: 'ataques a LLM documentados. Jailbreaks, inyecciones de prompt, extracción de datos, entradas adversariales. Actualizada a diario, desde arXiv y el terreno.', cta_primary: '$ explorar hacks', cta_ghost: '¿Qué es esto?', mascot_suffix: 'EXPLOITS DETECTADOS' },
     stats: { hacks: 'Hacks documentados', categories: 'Categorías', sources: 'Fuentes citadas', languages: 'Idiomas' },
     sections: { featured: 'Hack destacado', recent: 'Recientes', archive_link: 'ver archivo', all_link: 'todos los hacks' },
@@ -97,7 +101,8 @@ export const ui: Record<Locale, Dict> = {
   zh: {
     meta: { siteDesc: 'LLM 攻击、越狱和防御的开放数据库。每日更新。' },
     status: { live: '系统：运行中', lastScan: '上次扫描：2小时前', cves: '本周新增 CVE' },
-    nav: { hacks: '攻击', research: '研究', defenses: '防御', about: '关于', login: '$ 登录', search: '搜索' },
+    nav: { hacks: '攻击', categories: '类别', about: '关于', login: '$ 登录', search: '搜索' },
+    categories: { prompt: '> ls /hacks/by-category/', title: '类别', lead: '按类别浏览攻击。数字反映已记录的条目数。', hacks_count: '个攻击', all: '所有攻击', back: '← 返回类别', empty: '此类别暂无攻击。' },
     hero: { prompt: '> 欢迎来到地下世界', tagline_p1: '所有已知的方法来', tagline_break: '破解', tagline_p2: '大型语言模型。', lead_pre: '已记录的', lead_post: '个 LLM 攻击的开放数据库。越狱、提示注入、数据提取、对抗性输入。每日更新，来源于 arXiv 和现实世界。', cta_primary: '$ 浏览攻击', cta_ghost: '这是什么？', mascot_suffix: '个漏洞已发现' },
     stats: { hacks: '已记录的攻击', categories: '类别', sources: '引用来源', languages: '语言' },
     sections: { featured: '精选攻击', recent: '最近', archive_link: '查看归档', all_link: '所有攻击' },

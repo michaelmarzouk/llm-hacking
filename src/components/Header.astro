@@ -4,17 +4,16 @@ import LanguageSwitcher from './LanguageSwitcher.astro';
 import { t, lp, type Locale, defaultLocale } from '../i18n/utils';
 
 interface Props {
-  active?: 'hacks' | 'research' | 'defenses' | 'about';
+  active?: 'hacks' | 'categories' | 'about';
   locale?: Locale;
 }
 const { active, locale = defaultLocale } = Astro.props;
 const tr = t(locale);
 
 const links = [
-  { href: lp('/hacks', locale),    label: tr.nav.hacks,    id: 'hacks' },
-  { href: lp('/research', locale), label: tr.nav.research, id: 'research' },
-  { href: lp('/defenses', locale), label: tr.nav.defenses, id: 'defenses' },
-  { href: lp('/about', locale),    label: tr.nav.about,    id: 'about' },
+  { href: lp('/hacks', locale),       label: tr.nav.hacks,      id: 'hacks' },
+  { href: lp('/categories', locale),  label: tr.nav.categories, id: 'categories' },
+  { href: lp('/about', locale),       label: tr.nav.about,      id: 'about' },
 ] as const;
 ---
 <header class="py-5 border-b border-white/[0.08] sticky top-0 bg-cyber-void/[0.85] backdrop-blur-md z-50">

@@ -1,0 +1,9 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import CategoriesIndexContent from '../../components/CategoriesIndexContent.astro';
+import { t } from '../../i18n/utils';
+const tr = t('en');
+---
+<Layout title={`${tr.categories.title} — LLM-Hacking`} active="categories" locale="en">
+  <CategoriesIndexContent locale="en" />
+</Layout>

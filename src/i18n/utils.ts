@@ -15,6 +15,11 @@ export function getLocaleFromPath(pathname: string): Locale {
   return (locales as readonly string[]).includes(seg) ? (seg as Locale) : defaultLocale;
 }
 
+/** Turn a category name like "PROMPT INJECTION" into a URL slug "prompt-injection". */
+export function slugifyCategory(cat: string): string {
+  return cat.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
 /** Strip the locale prefix from a path, returning the canonical English path. */
 export function stripLocale(pathname: string): string {
   const seg = pathname.split('/').filter(Boolean)[0];

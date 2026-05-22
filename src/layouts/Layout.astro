@@ -16,7 +16,7 @@ import { t, defaultLocale, type Locale, locales, lp, stripLocale } from '../i18n
 interface Props {
   title: string;
   description?: string;
-  active?: 'hacks' | 'research' | 'defenses' | 'about';
+  active?: 'hacks' | 'categories' | 'about';
   locale?: Locale;
 }
 const { title, description, active, locale = defaultLocale } = Astro.props;
