@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html, body {
+    @apply bg-cyber-void text-pure-white font-sans;
+    -webkit-font-smoothing: antialiased;
+    background-image: radial-gradient(circle at 1px 1px, rgba(0, 255, 148, 0.08) 1px, transparent 0);
+    background-size: 24px 24px;
+  }
+  ::selection {
+    @apply bg-matrix-green text-cyber-void;
+  }
+  a { color: inherit; text-decoration: none; }
+}
+
+@layer components {
+  .container-main { @apply max-w-[1200px] mx-auto px-6; }
+
+  .btn-primary {
+    @apply inline-flex items-center gap-2 bg-matrix-green text-cyber-void px-4 py-2
+           rounded-md font-medium font-mono text-sm hover:bg-matrix-dim transition-colors;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center gap-2 border border-white/20 text-pure-white px-4 py-2
+           rounded-md font-medium text-sm hover:border-matrix-green hover:text-matrix-green transition-colors;
+  }
+  .btn-icon {
+    @apply w-9 h-9 inline-flex items-center justify-center border border-white/[0.16]
+           rounded-lg text-off-white hover:border-matrix-green hover:text-matrix-green
+           transition-colors font-mono;
+  }
+
+  .tag {
+    @apply inline-block font-mono text-[11px] px-2.5 py-1 rounded
+           tracking-wider font-medium;
+  }
+  .tag-cat { @apply bg-matrix-green/10 text-matrix-green border border-matrix-green/30; }
+  .tag-crit { @apply bg-glitch-pink/10 text-glitch-pink border border-glitch-pink/30; }
+  .tag-new { @apply bg-glitch-pink text-cyber-void; }
+  .tag-med { @apply bg-amber-500/10 text-amber-400 border border-amber-500/30; }
+  .tag-low { @apply bg-code-gray/20 text-muted-gray border border-white/[0.16]; }
+
+  .card-hack {
+    @apply block border border-white/10 rounded-xl p-6 bg-white/[0.015]
+           transition-all duration-200 hover:border-matrix-green hover:-translate-y-0.5
+           hover:bg-matrix-green/[0.03];
+  }
+
+  .cursor-blink {
+    @apply inline-block w-2 h-4 bg-matrix-green align-middle animate-blink;
+  }
+
+  .section-title::before {
+    content: ">";
+    @apply text-matrix-green font-mono mr-3;
+  }
+}

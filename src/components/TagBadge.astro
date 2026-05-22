@@ -1,0 +1,15 @@
+---
+interface Props {
+  variant: 'cat' | 'crit' | 'med' | 'low' | 'new';
+  label: string;
+}
+const { variant, label } = Astro.props;
+const cls = {
+  cat:  'tag tag-cat',
+  crit: 'tag tag-crit',
+  med:  'tag tag-med',
+  low:  'tag tag-low',
+  new:  'tag tag-new',
+}[variant];
+---
+<span class={cls}>{label}</span>

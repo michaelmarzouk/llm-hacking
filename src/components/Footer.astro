@@ -1,0 +1,60 @@
+---
+import Logo from './Logo.astro';
+
+const cols = [
+  {
+    title: 'EXPLORE',
+    links: [
+      { href: '/hacks', label: 'All hacks' },
+      { href: '/categories', label: 'Categories' },
+      { href: '/research', label: 'Research' },
+      { href: '/defenses', label: 'Defenses' },
+    ],
+  },
+  {
+    title: 'RESOURCES',
+    links: [
+      { href: '/api', label: 'Public API' },
+      { href: '/rss.xml', label: 'RSS feed' },
+      { href: '/contribute', label: 'Contribute' },
+      { href: '/about', label: 'About' },
+    ],
+  },
+  {
+    title: 'FOLLOW',
+    links: [
+      { href: 'https://github.com/michaelmarzouk/llm-hacking', label: 'GitHub' },
+      { href: 'https://twitter.com/llmhacking', label: 'Twitter' },
+      { href: 'https://mastodon.social/@llmhacking', label: 'Mastodon' },
+      { href: '/newsletter', label: 'Newsletter' },
+    ],
+  },
+];
+---
+<footer class="border-t border-white/[0.08] pt-12 pb-8 mt-20">
+  <div class="container-main">
+    <div class="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr_1fr] gap-12 mb-8">
+      <div class="flex gap-4 items-start">
+        <Logo size={48} />
+        <div>
+          <h4 class="font-display text-base mb-1">llm-hacking<span class="text-matrix-green">.com</span></h4>
+          <p class="text-sm text-muted-gray leading-relaxed">Open database of LLM attacks, jailbreaks, and defenses. Built by researchers, for researchers.</p>
+        </div>
+      </div>
+      {cols.map(col => (
+        <div>
+          <h5 class="font-mono text-xs text-muted-gray uppercase tracking-widest mb-4">{col.title}</h5>
+          <ul class="space-y-2">
+            {col.links.map(l => (
+              <li><a href={l.href} class="text-sm text-off-white hover:text-matrix-green transition-colors">{l.label}</a></li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+    <div class="pt-6 border-t border-white/[0.08] flex justify-between items-center font-mono text-xs text-muted-gray">
+      <span>© 2026 llm-hacking.com — content under CC BY-SA 4.0</span>
+      <span class="text-code-gray hidden md:inline">$ echo "stay curious, stay safe"</span>
+    </div>
+  </div>
+</footer>

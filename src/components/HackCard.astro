@@ -1,0 +1,29 @@
+---
+import TagBadge from './TagBadge.astro';
+
+interface Props {
+  href: string;
+  title: string;
+  excerpt: string;
+  category: string;
+  severity: 'crit' | 'med' | 'low';
+  date: string;
+  readingTime: string;
+  isNew?: boolean;
+}
+const { href, title, excerpt, category, severity, date, readingTime, isNew } = Astro.props;
+
+const sevLabel = { crit: 'CRITICAL', med: 'MEDIUM', low: 'LOW' }[severity];
+---
+<a class="card-hack flex flex-col gap-4" href={href}>
+  <div class="flex flex-wrap gap-2">
+    <TagBadge variant="cat" label={category} />
+    <TagBadge variant={severity} label={sevLabel} />
+    {isNew && <TagBadge variant="new" label="NEW" />}
+  </div>
+  <h4 class="font-display font-bold text-lg leading-tight">{title}</h4>
+  <p class="text-sm text-off-white leading-relaxed flex-1">{excerpt}</p>
+  <div class="font-mono text-[11px] text-muted-gray">
+    <span>{date}</span><span class="text-code-gray mx-2">//</span><span>{readingTime}</span>
+  </div>
+</a>

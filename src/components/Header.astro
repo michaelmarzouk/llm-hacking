@@ -1,0 +1,35 @@
+---
+import Logo from './Logo.astro';
+
+interface Props {
+  active?: 'hacks' | 'research' | 'defenses' | 'about';
+}
+const { active } = Astro.props;
+
+const links = [
+  { href: '/hacks', label: 'Hacks', id: 'hacks' },
+  { href: '/research', label: 'Research', id: 'research' },
+  { href: '/defenses', label: 'Defenses', id: 'defenses' },
+  { href: '/about', label: 'About', id: 'about' },
+] as const;
+---
+<header class="py-5 border-b border-white/[0.08] sticky top-0 bg-cyber-void/[0.85] backdrop-blur-md z-50">
+  <div class="container-main flex justify-between items-center gap-8">
+    <a href="/" class="flex items-center gap-3 font-display font-bold text-lg tracking-tight">
+      <Logo size={36} />
+      <span><span class="text-pure-white">llm-hacking</span><span class="text-matrix-green">.com</span></span>
+    </a>
+
+    <nav class="hidden md:flex gap-7 text-sm font-medium">
+      {links.map(({ href, label, id }) => (
+        <a href={href} class={`transition-colors ${active === id ? 'text-matrix-green' : 'text-off-white hover:text-matrix-green'}`}>{label}</a>
+      ))}
+    </nav>
+
+    <div class="flex gap-3 items-center">
+      <a href="/search" class="btn-icon" aria-label="Search">⌕</a>
+      <a href="/rss.xml" class="btn-icon" aria-label="RSS">⌗</a>
+      <a href="/login" class="btn-primary">$ login</a>
+    </div>
+  </div>
+</header>
