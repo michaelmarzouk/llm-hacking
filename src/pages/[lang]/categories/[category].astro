@@ -2,19 +2,20 @@
 import { getCollection } from 'astro:content';
 import Layout from '../../../layouts/Layout.astro';
 import HackCard from '../../../components/HackCard.astro';
-import { t, lp, slugifyCategory, locales, defaultLocale, type Locale } from '../../../i18n/utils';
+import { t, lp, slugifyCategory, locales, defaultLocale, hackLocale, hackSlug, type Locale } from '../../../i18n/utils';
 
 export async function getStaticPaths() {
-  const hacks = await getCollection('hacks');
-  const cats = new Map<string, typeof hacks>();
-  for (const h of hacks) {
-    const k = h.data.category;
-    if (!cats.has(k)) cats.set(k, []);
-    cats.get(k)!.push(h);
-  }
+  const all = await getCollection('hacks');
   const paths = [];
   for (const locale of locales) {
     if (locale === defaultLocale) continue;
+    const localized = all.filter(h => hackLocale(h.id) === locale);
+    const cats = new Map<string, typeof localized>();
+    for (const h of localized) {
+      const k = h.data.category;
+      if (!cats.has(k)) cats.set(k, []);
+      cats.get(k)!.push(h);
+    }
     for (const [cat, items] of cats) {
       paths.push({
         params: { lang: locale, category: slugifyCategory(cat) },
@@ -40,24 +41,20 @@ const tr = t(locale);
       </div>
       <p class="text-off-white text-lg max-w-2xl mb-10">{hacks.length} {tr.categories.hacks_count}.</p>
 
-      {sorted.length === 0 ? (
-        <p class="text-muted-gray font-mono text-sm">{tr.categories.empty}</p>
-      ) : (
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {sorted.map(h => (
-            <HackCard
-              href={`/hacks/${h.id}`}
-              title={h.data.title}
-              excerpt={h.data.excerpt}
-              category={h.data.category}
-              severity={h.data.severity}
-              date={h.data.date}
-              readingTime={h.data.readingTime}
-              isNew={h.data.isNew}
-            />
-          ))}
-        </div>
-      )}
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        {sorted.map(h => (
+          <HackCard
+            href={lp(`/hacks/${hackSlug(h.id)}`, locale)}
+            title={h.data.title}
+            excerpt={h.data.excerpt}
+            category={h.data.category}
+            severity={h.data.severity}
+            date={h.data.date}
+            readingTime={h.data.readingTime}
+            isNew={h.data.isNew}
+          />
+        ))}
+      </div>
     </div>
   </section>
 </Layout>

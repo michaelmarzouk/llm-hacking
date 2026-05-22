@@ -33,13 +33,14 @@ const tr = t(locale);
 </section>
 
 <script>
-  type Doc = { id: string; url: string; title: string; excerpt: string; category: string; severity: 'crit'|'med'|'low'; date: string; body: string; };
+  type Doc = { id: string; locale: string; url: string; title: string; excerpt: string; category: string; severity: 'crit'|'med'|'low'; date: string; body: string; };
   const input    = document.getElementById('search-input') as HTMLInputElement;
   const results  = document.getElementById('search-results') as HTMLElement;
   const empty    = document.getElementById('search-empty') as HTMLElement;
   const metaEl   = document.getElementById('search-meta') as HTMLElement;
   const indexedSuffix = metaEl?.dataset.indexedSuffix || 'hacks indexed';
 
+  const currentLocale = document.documentElement.lang || 'en';
   let docs: Doc[] = [];
   const sevLabel = (s: 'crit'|'med'|'low') => s === 'crit' ? 'CRITICAL' : s === 'med' ? 'MEDIUM' : 'LOW';
   const sevClass = (s: 'crit'|'med'|'low') => s === 'crit' ? 'tag-crit' : s === 'med' ? 'tag-med' : 'tag-low';
@@ -81,7 +82,7 @@ const tr = t(locale);
     debounce = window.setTimeout(() => render(input.value), 80);
   });
   fetch('/search-index.json').then(r => r.json()).then(d => {
-    docs = d;
+    docs = (d as Doc[]).filter(x => x.locale === currentLocale);
     const q = new URLSearchParams(window.location.search).get('q');
     if (q) { input.value = q; render(q); } else { render(''); }
   }).catch(() => { metaEl.textContent = 'index unavailable'; });

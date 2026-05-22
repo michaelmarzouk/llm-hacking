@@ -2,11 +2,13 @@
 import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import TagBadge from '../../components/TagBadge.astro';
-import { t, lp } from '../../i18n/utils';
+import { t, lp, hackLocale, hackSlug } from '../../i18n/utils';
 
 export async function getStaticPaths() {
   const hacks = await getCollection('hacks');
-  return hacks.map(h => ({ params: { slug: h.id }, props: { hack: h } }));
+  return hacks
+    .filter(h => hackLocale(h.id) === 'en')
+    .map(h => ({ params: { slug: hackSlug(h.id) }, props: { hack: h } }));
 }
 
 const { hack } = Astro.props;

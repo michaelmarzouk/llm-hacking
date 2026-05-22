@@ -20,6 +20,16 @@ export function slugifyCategory(cat: string): string {
   return cat.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 }
 
+/** Hack collection ids look like "en/ascii-smuggling" or "fr/sleeper-agents". */
+export function hackLocale(id: string): Locale {
+  const seg = id.split('/')[0];
+  return (locales as readonly string[]).includes(seg) ? (seg as Locale) : defaultLocale;
+}
+export function hackSlug(id: string): string {
+  const parts = id.split('/');
+  return parts.length > 1 ? parts.slice(1).join('/') : id;
+}
+
 /** Strip the locale prefix from a path, returning the canonical English path. */
 export function stripLocale(pathname: string): string {
   const seg = pathname.split('/').filter(Boolean)[0];

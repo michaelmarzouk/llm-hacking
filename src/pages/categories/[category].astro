@@ -2,12 +2,13 @@
 import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import HackCard from '../../components/HackCard.astro';
-import { t, lp, slugifyCategory } from '../../i18n/utils';
+import { t, lp, slugifyCategory, hackLocale, hackSlug } from '../../i18n/utils';
 
 export async function getStaticPaths() {
-  const hacks = await getCollection('hacks');
-  const cats = new Map<string, typeof hacks>();
-  for (const h of hacks) {
+  const all = await getCollection('hacks');
+  const enOnly = all.filter(h => hackLocale(h.id) === 'en');
+  const cats = new Map<string, typeof enOnly>();
+  for (const h of enOnly) {
     const k = h.data.category;
     if (!cats.has(k)) cats.set(k, []);
     cats.get(k)!.push(h);
@@ -31,26 +32,22 @@ const tr = t('en');
         <h1 class="font-display font-bold text-4xl md:text-5xl tracking-tight">{categoryName}</h1>
         <span class="font-pixel text-3xl text-matrix-green">({hacks.length})</span>
       </div>
-      <p class="text-off-white text-lg max-w-2xl mb-10">{hacks.length} {tr.categories.hacks_count} {tr.sections.recent.toLowerCase()}.</p>
+      <p class="text-off-white text-lg max-w-2xl mb-10">{hacks.length} {tr.categories.hacks_count}.</p>
 
-      {sorted.length === 0 ? (
-        <p class="text-muted-gray font-mono text-sm">{tr.categories.empty}</p>
-      ) : (
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {sorted.map(h => (
-            <HackCard
-              href={`/hacks/${h.id}`}
-              title={h.data.title}
-              excerpt={h.data.excerpt}
-              category={h.data.category}
-              severity={h.data.severity}
-              date={h.data.date}
-              readingTime={h.data.readingTime}
-              isNew={h.data.isNew}
-            />
-          ))}
-        </div>
-      )}
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        {sorted.map(h => (
+          <HackCard
+            href={lp(`/hacks/${hackSlug(h.id)}`, 'en')}
+            title={h.data.title}
+            excerpt={h.data.excerpt}
+            category={h.data.category}
+            severity={h.data.severity}
+            date={h.data.date}
+            readingTime={h.data.readingTime}
+            isNew={h.data.isNew}
+          />
+        ))}
+      </div>
     </div>
   </section>
 </Layout>

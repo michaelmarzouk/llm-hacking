@@ -1,12 +1,12 @@
 ---
 import { getCollection } from 'astro:content';
-import { t, lp, slugifyCategory, defaultLocale, type Locale } from '../i18n/utils';
+import { t, lp, slugifyCategory, defaultLocale, hackLocale, type Locale } from '../i18n/utils';
 
 interface Props { locale?: Locale; }
 const { locale = defaultLocale } = Astro.props;
 const tr = t(locale);
 
-const allHacks = await getCollection('hacks');
+const allHacks = (await getCollection('hacks')).filter(h => hackLocale(h.id) === locale);
 
 const counts = new Map<string, number>();
 for (const h of allHacks) {
